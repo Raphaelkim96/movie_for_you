@@ -45,7 +45,7 @@ for z in range(1):
     #         driver.find_element(By.XPATH, button_xpath).click()
 
 
-    for i in range(1,3):
+    for i in range(1,2):
 
         df_titles = pd.DataFrame()
         url = 'https://m.kinolights.com/discover/explore'
@@ -93,17 +93,23 @@ for z in range(1):
                 review_xpath = '//*[@id="contents"]/div[5]/section[2]/div/article[{}]/div[3]/a/h5'.format(j)
                 review = driver.find_element(By.XPATH, review_xpath).text
                 review = re.compile('[^가-힣 ]').sub('', review)
-                reviews.append(title)
+                reviews.append(review)
             except:
                 print("j")
                 print(j)
 
+    # 각 영화마다 제목과 리뷰를 매칭하여 데이터프레임 생성
+    data = {
+        'Title': [title] * len(reviews),  # 리뷰 개수만큼 제목 반복
+        'Review': reviews
+    }
+    df_section = pd.DataFrame(data)
+    df_titles = pd.concat([df_titles, df_section], ignore_index=True)
 
-
-        df_section_titles = pd.DataFrame(titles, columns=['Titles'])  # 데이터프레임 생성
-        df_section_reviews = pd.DataFrame(reviews, columns=['Reviews'])  # 데이터프레임 생성
-        #df_section_titles['category'] = category[z]  # 카테고리 라벨 붙이기
-        df_titles = pd.concat([df_section_titles, df_section_reviews], axis='rows', ignore_index=True)  # 빈 데이터프레임에 row정장
+        # df_section_titles = pd.DataFrame(titles, columns=['Titles'])  # 데이터프레임 생성
+        # df_section_reviews = pd.DataFrame(reviews, columns=['Reviews'])  # 데이터프레임 생성
+        # #df_section_titles['category'] = category[z]  # 카테고리 라벨 붙이기
+        # df_titles = pd.concat([df_section_titles, df_section_reviews], axis='rows', ignore_index=True)  # 빈 데이터프레임에 row정장
 
     print(df_titles.head())
     df_titles.info()
