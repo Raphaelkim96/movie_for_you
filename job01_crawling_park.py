@@ -10,7 +10,7 @@ import pandas as pd
 import re
 import time
 import datetime
-import pyautogui
+# import pyautogui
 from selenium.webdriver.common.keys import Keys
 
 options = ChromeOptions()
@@ -21,8 +21,6 @@ options.add_argument('lang=ko_KR')
 service = ChromeService(executable_path=ChromeDriverManager().install()) # 브라우저 install
 driver = webdriver.Chrome(service=service, options=options)
 
-# category = ['Politics']
-#category = ['Politics', 'Economic', 'Social', 'Culture', 'World', 'IT']
 category = ['Titles', 'Review']
 
 def open_in_new_tab(driver, element):
@@ -33,31 +31,16 @@ def open_in_new_tab(driver, element):
 # df_titles = pd.DataFrame()
 for z in range(1):
 
+    df_titles = pd.DataFrame()
     url = 'https://m.kinolights.com/discover/explore'
     driver.get(url)
-    # button_xpath = '//*[@id="newsct"]/div[4]/div/div[2]' #id가 newsct요소에 있는 div태그4번쨰-div-div2번
-    # button_xpath1 = '//*[@id="newsct"]/div[5]/div/div[2]'  # id가 newsct요소에 있는 div태그4번쨰-div-div2번
-
-
-
     time.sleep(1)
-    # for i in range(15):
-    #     time.sleep(0.5)
-    #     if url == 'https://news.naver.com/section/101':
-    #         driver.find_element(By.XPATH, button_xpath1).click()
-    #     else :
-    #         driver.find_element(By.XPATH, button_xpath).click()
-
 
     for i in range(1,3):
 
-        df_titles = pd.DataFrame()
-        url = 'https://m.kinolights.com/discover/explore'
-        driver.get(url)
-        time.sleep(1)
-
         titles = []
         reviews = []
+
         button_xpath = '//*[@id="contents"]/div/div/div[3]/div[2]/div[{}]/a/div/div[1]/div[1]/img'.format(i)
         button_xpath1 = '//*[@id="review"]'
         button_xpath3 = '//*[@id="content__body"]/div'
@@ -89,9 +72,6 @@ for z in range(1):
             driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
             time.sleep(1)
 
-
-
-
         for j in range(1,51):
 
             try:
@@ -108,18 +88,13 @@ for z in range(1):
         # 원래 탭으로 돌아가기
         driver.switch_to.window(driver.window_handles[0])
 
-    # 각 영화마다 제목과 리뷰를 매칭하여 데이터프레임 생성
-    data = {
-        'Title': [title] * len(reviews),  # 리뷰 개수만큼 제목 반복
-        'Review': reviews
-    }
-    df_section = pd.DataFrame(data)
-    df_titles = pd.concat([df_titles, df_section], ignore_index=True)
-
-        # df_section_titles = pd.DataFrame(titles, columns=['Titles'])  # 데이터프레임 생성
-        # df_section_reviews = pd.DataFrame(reviews, columns=['Reviews'])  # 데이터프레임 생성
-        # #df_section_titles['category'] = category[z]  # 카테고리 라벨 붙이기
-        # df_titles = pd.concat([df_section_titles, df_section_reviews], axis='rows', ignore_index=True)  # 빈 데이터프레임에 row정장
+        # 각 영화마다 제목과 리뷰를 매칭하여 데이터프레임 생성
+        data = {
+            'Title': [title] * len(reviews),  # 리뷰 개수만큼 제목 반복
+            'Review': reviews
+        }
+        df_section = pd.DataFrame(data)
+        df_titles = pd.concat([df_titles, df_section], ignore_index=True)
 
     print(df_titles.head())
     df_titles.info()
